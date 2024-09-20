@@ -27,15 +27,44 @@ const Navbar = () => {
           className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
         >
           <li>
-            <a href="/profile" className="justify-between">User Preferences</a>
+            <a href="/profile" className="justify-between">
+              User Preferences
+            </a>
           </li>
-          {/* <li>
+          <li>
             <a>Settings</a>
           </li>
           <li>
             <a>Logout</a>
-          </li> */}
+          </li>
         </ul>
+      </div>
+
+      <div>
+        <div class="drawer drawer-end">
+          <input id="my-drawer-4" type="checkbox" class="drawer-toggle" />
+          <div class="drawer-content">
+            <label for="my-drawer-4" class="drawer-button btn btn-primary">
+            <FiUser className="text-xl" /> 
+              Login
+            </label>
+          </div>
+          <div class="drawer-side">
+            <label
+              for="my-drawer-4"
+              aria-label="close sidebar"
+              class="drawer-overlay"
+            ></label>
+            <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
+              <li>
+                <a>Sidebar Item 1</a>
+              </li>
+              <li>
+                <a>Sidebar Item 2</a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   );
