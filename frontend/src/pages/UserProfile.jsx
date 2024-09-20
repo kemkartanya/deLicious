@@ -132,14 +132,21 @@ const cooking_skill_levels = [
 const UserProfile = () => {
   return (
     <div className="p-5">
-      <div className="text-xl font-bold">User Profile & Preferences</div>
-      <div className="mb-4">
-        save your preferences for personalized recipe suggestions in future
-      </div>
-      <div className="grid grid-cols-2 m-3 gap-4">
+      <div className="flex justify-between gap-2">
         <div>
-          <div className="text-lg text-[#4B4F54] mb-1">Favorite meats</div>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="text-xl font-bold">User Profile & Preferences</div>
+          <div className="mb-4">
+            save your preferences for personalized recipe suggestions in future
+          </div>
+        </div>
+
+        <button className="btn btn-outline btn-success">save</button>
+      </div>
+
+      <div className="grid md:grid-cols-2 grid-cols-1 m-3 gap-4">
+        <div>
+          <div className="text-lg text-[#4B4F54] mb-1 font-bold">Favorite meats</div>
+          <div className="grid md:grid-cols-4 grid-cols-2 gap-2">
             {meat_preferences?.map((meat) => (
               <div className="flex gap-2 items-center">
                 <input type="checkbox" className="checkbox checkbox-sm" />
@@ -149,10 +156,10 @@ const UserProfile = () => {
           </div>
         </div>
         <div>
-          <div className="text-lg text-[#4B4F54] mb-1">
+          <div className="text-lg text-[#4B4F54] mb-1 font-bold">
             Dietary restrictions
           </div>
-          <div className="grid grid-cols-4 gap-2">
+          <div className="grid md:grid-cols-4 grid-cols-2 gap-2">
             {dietary_restrictions?.map((meat) => (
               <div className="flex gap-2 items-center">
                 <input type="checkbox" className="checkbox checkbox-sm" />
@@ -162,7 +169,7 @@ const UserProfile = () => {
           </div>
         </div>
         <div>
-          <div className="text-lg text-[#4B4F54] mb-1">Spice tolerance</div>
+          <div className="text-lg text-[#4B4F54] mb-1 font-bold">Spice tolerance</div>
           <div className="grid grid-cols-2 gap-2">
             {spices_tolerance?.map((meat) => (
               <div className="flex gap-2 items-center">
@@ -178,7 +185,7 @@ const UserProfile = () => {
           </div>
         </div>
         <div>
-          <div className="text-lg text-[#4B4F54] mb-1">
+          <div className="text-lg text-[#4B4F54] mb-1 font-bold">
             Cooking skill levels
           </div>
           <div className="grid grid-cols-2 gap-2">
