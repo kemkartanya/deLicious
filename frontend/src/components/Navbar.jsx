@@ -3,7 +3,7 @@ import { FiUser } from "react-icons/fi";
 
 const Navbar = () => {
   return (
-    <div className="px-28 py-4 shadow navbar bg-base-100">
+    <div className="md:px-28 py-4 shadow navbar bg-base-100">
       <div className="flex-1">
         <a href="/">
           <img src="/licious-logo.svg" alt="Licious Logo" className="h-12" />
