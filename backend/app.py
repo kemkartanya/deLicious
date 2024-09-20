@@ -1,9 +1,45 @@
-from flask import Flask
-from flask import request
-from twilio.rest import Client
+from flask import Flask, request, jsonify
 import os
+from flask_sqlalchemy import SQLAlchemy
+import random
+from utils import sms_twilio
+from dotenv import load_dotenv
+
+load_dotenv()
+
+db = SQLAlchemy()
 
 app = Flask(__name__)
+
+# Configure the PostgreSQL database with SQLAlchemy
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DB_URI")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+db = SQLAlchemy(app)
+
+
+# Create tables
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    mobile = db.Column(db.String(15), unique=True, nullable=False)
+    latest_otp = db.Column(db.String(4), nullable=False)
+    created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
+    updated_at = db.Column(
+        db.DateTime,
+        default=db.func.current_timestamp(),
+        onupdate=db.func.current_timestamp(),
+    )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "mobile": self.mobile,
+        }
+
+
+# Create the database and table
+with app.app_context():
+    db.create_all()
 
 
 @app.route("/")
@@ -20,24 +56,62 @@ def get_recipes():
 
 @app.route("/api/v1/send-otp", methods=["POST"])
 def send_otp():
-    data = request.json
-    mobile = data["mobile"]
+    try:
+        mobile = request.json.get("mobile")
+        otp = random.randint(1000, 9999)  # Generate a random 4 digit OTP
+        user = User.query.filter_by(mobile=mobile).first()
 
-    account_sid = os.getenv("TWILIO_ACCOUNT_SID")
-    auth_token = os.getenv("TWILIO_AUTH_TOKEN")
-    client = Client(account_sid, auth_token)
-    message = client.messages.create(to=mobile)
-    print(message.sid)
+        if user:
+            user.latest_otp = otp
+        else:
+            new_user = User(mobile=mobile, latest_otp=otp)
+            db.session.add(new_user)
+        db.session.commit()
 
-    return {"message": "OTP sent successfully", "status": "success", "otp": message.sid}
+        mess_sid = sms_twilio("Hello from deLicious, your OTP is: " + str(otp), mobile)
+
+        return (
+            jsonify(
+                {
+                    "message": "OTP sent successfully",
+                    "status": "success",
+                    "otp": mess_sid,
+                }
+            ),
+            200,
+        )
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Internal Server Error"}), 500
 
 
 @app.route("/api/v1/verify-otp", methods=["POST"])
 def verify_otp():
-    data = request.json
-
-    return data
+    try:
+        mobile = request.json.get("mobile")
+        otp = request.json.get("otp")
+        user = User.query.filter_by(mobile=mobile).first()
+        if user and user.latest_otp == otp:
+            user.latest_otp = (
+                "999"  # Set the OTP to 999 to indicate that the OTP has been verified
+            )
+            db.session.commit()
+            return (
+                jsonify(
+                    {
+                        "message": "OTP verified successfully",
+                        "status": "success",
+                        "user": user.to_dict(),
+                    }
+                ),
+                200,
+            )
+        else:
+            return jsonify({"message": "Invalid OTP"}), 400
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Internal Server Error"}), 500
 
 
 if __name__ == "__main__":
-    app.run(port=8000)
+    app.run(debug=True, port=8000)
