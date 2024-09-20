@@ -3,7 +3,7 @@ import { FiUser } from "react-icons/fi";
 
 const Navbar = () => {
   return (
-    <div className="px-28 py-4 shadow navbar bg-base-100">
+    <div className="md:px-28 py-4 shadow navbar bg-base-100">
       <div className="flex-1">
         <a href="/">
           <img src="/licious-logo.svg" alt="Licious Logo" className="h-12" />
@@ -27,7 +27,7 @@ const Navbar = () => {
           className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
         >
           <li>
-            <a className="justify-between">User Preferences</a>
+            <a href="/profile" className="justify-between">User Preferences</a>
           </li>
           {/* <li>
             <a>Settings</a>
