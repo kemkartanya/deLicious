@@ -1,5 +1,6 @@
 import React from "react";
 import { FiUser } from "react-icons/fi";
+import Login from "../pages/Login";
 
 const Navbar = () => {
   return (
@@ -55,13 +56,8 @@ const Navbar = () => {
               aria-label="close sidebar"
               class="drawer-overlay"
             ></label>
-            <ul class="menu bg-base-200 text-base-content min-h-full w-80 p-4">
-              <li>
-                <a>Sidebar Item 1</a>
-              </li>
-              <li>
-                <a>Sidebar Item 2</a>
-              </li>
+            <ul class="menu bg-base-200 text-base-content min-h-full w-1/3 p-0">
+              <Login/>
             </ul>
           </div>
         </div>
