@@ -28,6 +28,9 @@ const Navbar = () => {
         <a href="/receipe-generator" className="btn btn-ghost">
           Receipe Generator
         </a>
+        <a href="/popular-receipes" className="btn btn-ghost">
+          Popular Receipes
+        </a>
       </div>
 
       {user?.id ? (
@@ -45,6 +48,11 @@ const Navbar = () => {
             <li>
               <a href="/profile" className="justify-between">
                 User Preferences
+              </a>
+            </li>
+            <li>
+              <a href="/favorite-receipes" className="justify-between">
+                Favorite Receipes
               </a>
             </li>
 
