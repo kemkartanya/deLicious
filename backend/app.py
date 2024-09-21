@@ -23,18 +23,18 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
-openai.api_key = os.getenv('API_KEY')
+openai.api_key = os.getenv("API_KEY")
+
 
 def image_gen(dishname):
 
     response = openai.Image.create(
-        prompt=dishname,
-        n=1,  # Number of images to generate
-        size="1024x1024"
+        prompt=dishname, n=1, size="1024x1024"  # Number of images to generate
     )
 
-    image_url = response['data'][0]['url']
+    image_url = response["data"][0]["url"]
     return image_url
+
 
 # Create tables
 class User(db.Model):
@@ -71,34 +71,76 @@ class User(db.Model):
 with app.app_context():
     db.create_all()
 
-conversation_history=[]
+conversation_history = []
+
+
 def ask_question(question):
     global conversation_history
-    product_category='Chicken' if 'chicken' in question.lower() else 'Fish Boneless' if 'fish' in question.lower() else 'Mutton' if 'mutton' in question.lower() else 'Liver' if 'liver' in question.lower() else 'Prawns & Crabs' if 'prawn' in question.lower() else 'Prawns & Crabs' if 'crab' in question.lower() else 'Eggs' if 'egg' in question.lower() else 'Prawns & Crabs' if 'crab' in question.lower() else None
-    if product_category!=None:
-        category_prompt ='Out of these categories: Chicken, Fish Boneless, Mutton, Liver, Prawns & Crabs, Eggs, Crispy snacks, Kebabs and biryani, Plant Based Meet, Meet Masala which is the closest to {question}'
-        response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=[{"role": "user", "content":conversation_history}]
+    product_category = (
+        "Chicken"
+        if "chicken" in question.lower()
+        else (
+            "Fish Boneless"
+            if "fish" in question.lower()
+            else (
+                "Mutton"
+                if "mutton" in question.lower()
+                else (
+                    "Liver"
+                    if "liver" in question.lower()
+                    else (
+                        "Prawns & Crabs"
+                        if "prawn" in question.lower()
+                        else (
+                            "Prawns & Crabs"
+                            if "crab" in question.lower()
+                            else (
+                                "Eggs"
+                                if "egg" in question.lower()
+                                else (
+                                    "Prawns & Crabs"
+                                    if "crab" in question.lower()
+                                    else None
+                                )
+                            )
+                        )
+                    )
+                )
+            )
+        )
     )
+    if product_category != None:
+        category_prompt = "Out of these categories: Chicken, Fish Boneless, Mutton, Liver, Prawns & Crabs, Eggs, Crispy snacks, Kebabs and biryani, Plant Based Meet, Meet Masala which is the closest to {question}"
+        response = openai.ChatCompletion.create(
+            model="gpt-4", messages=[{"role": "user", "content": conversation_history}]
+        )
     # Append the user's new message to the conversation history
-    user_preference={'Chicken':['chicken wings', 'chicken breast'],'meat':['meat '] }
-    conversation_history.append({"role": "user", "content": question + ' provide recipe the dietery component like high in protein, carbs etc. These are my preferences '+','.join(user_preference[product_category])})
+    user_preference = {
+        "Chicken": ["chicken wings", "chicken breast"],
+        "meat": ["meat "],
+    }
+    conversation_history.append(
+        {
+            "role": "user",
+            "content": question
+            + " provide recipe the dietery component like high in protein, carbs etc. These are my preferences "
+            + ",".join(user_preference[product_category]),
+        }
+    )
 
     # Send the conversation history to the API
     response = openai.ChatCompletion.create(
-        model="gpt-4",
-        messages=conversation_history
+        model="gpt-4", messages=conversation_history
     )
 
-
     # Get the assistant's response
-    answer = response['choices'][0]['message']['content']
+    answer = response["choices"][0]["message"]["content"]
 
     # Add the assistant's response to the conversation history
     conversation_history.append({"role": "assistant", "content": answer})
 
     return answer
+
 
 @app.route("/")
 def hello_world():
@@ -110,10 +152,10 @@ def get_recipes():
     values = request.args.get("values")
     response = ask_question(values)
 
-    dishname = 'Give me the dish_name from this recipe {response}'
+    dishname = "Give me the dish_name from this recipe {response}"
     dish_image = image_gen(dishname)
 
-    return {'resp': response, 'dish_image': dish_image}
+    return {"resp": response, "dish_image": dish_image}
 
 
 @app.route("/api/v1/send-otp", methods=["POST"])
@@ -213,6 +255,7 @@ def save_user_preferences():
     except Exception as e:
         print(e)
         return jsonify({"error": "Internal Server Error"}), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True, port=8000)

@@ -31,9 +31,6 @@ const Navbar = () => {
         <a href="/popular-receipes" className="btn btn-ghost">
           Popular Receipes
         </a>
-        <a href="/profile" className="btn btn-ghost">
-          User Preferences
-        </a>
       </div>
 
       {user?.id ? (
