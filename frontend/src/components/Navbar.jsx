@@ -24,7 +24,7 @@ const Navbar = () => {
           <img src="/deLicious-logo.svg" alt="Licious Logo" className="h-12" />
         </a>
       </div>
-      <div>
+      <div className="gap-3 mx-4">
         <a href="/receipe-generator" className="btn btn-ghost">
           Receipe Generator
         </a>
@@ -69,7 +69,7 @@ const Navbar = () => {
           <div class="drawer drawer-end">
             <input id="login-drawer" type="checkbox" class="drawer-toggle" />
             <div class="drawer-content">
-              <label for="login-drawer" class="drawer-button btn">
+              <label for="login-drawer" class="drawer-button btn flex flex-row w-28">
                 <FiUser className="text-xl" />
                 Login
               </label>

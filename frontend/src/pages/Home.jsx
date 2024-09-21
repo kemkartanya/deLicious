@@ -13,7 +13,7 @@ const Home = () => {
   return (
     <div>
       {/* Hero Banner */}
-      <div className="relative">
+      <div className="">
         <img
           src="src/assets/banner.png" 
           alt="Hero Banner"
