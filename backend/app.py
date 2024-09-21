@@ -113,6 +113,7 @@ def get_recipes():
     dishname = 'Give me the dish_name from this recipe {response}'
     dish_image = image_gen(dishname)
 
+    
     return {'resp': response, 'dish_image': dish_image}
 
 
