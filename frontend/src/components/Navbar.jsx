@@ -1,9 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FiUser } from "react-icons/fi";
 import LoginDrawer from "./LoginDrawer";
+import OtpDrawer from "./OtpDrawer";
 
 const Navbar = () => {
-  const user = JSON.parse(localStorage.getItem("user"));
+  const [user, setUser] = useState("");
+
+  useEffect(() => {
+    if (localStorage.getItem("user")) {
+      setUser(JSON.parse(localStorage.getItem("user")));
+    }
+  }, []);
+
+  const logout = () => {
+    setUser("");
+    localStorage.clear();
+  };
+
   return (
     <div className="md:px-28 py-4 shadow navbar bg-base-100">
       <div className="flex-1">
@@ -14,6 +27,9 @@ const Navbar = () => {
       <div>
         <a href="/receipe-generator" className="btn btn-ghost">
           Receipe Generator
+        </a>
+        <a href="/popular-receipes" className="btn btn-ghost">
+          Popular Receipes
         </a>
       </div>
 
@@ -34,12 +50,15 @@ const Navbar = () => {
                 User Preferences
               </a>
             </li>
-            {/* <li>
-          <a>Settings</a>
-        </li>
-        <li>
-          <a>Logout</a>
-        </li> */}
+            <li>
+              <a href="/favorite-receipes" className="justify-between">
+                Favorite Receipes
+              </a>
+            </li>
+
+            <li>
+              <a onClick={() => logout()}>Logout</a>
+            </li>
           </ul>
         </div>
       ) : (
@@ -53,6 +72,11 @@ const Navbar = () => {
               </label>
             </div>
             <LoginDrawer />
+          </div>
+
+          <div className="drawer drawer-end">
+            <input id="otp-drawer" type="checkbox" className="drawer-toggle" />
+            <OtpDrawer />
           </div>
         </div>
       )}
