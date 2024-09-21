@@ -5,6 +5,7 @@ import random
 from utils import sms_twilio
 from dotenv import load_dotenv
 from flask_cors import CORS
+import openai
 
 load_dotenv()
 
@@ -19,6 +20,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 
+openai.api_key = os.getenv('API_KEY')
 
 # Create tables
 class User(db.Model):
@@ -43,6 +45,26 @@ class User(db.Model):
 with app.app_context():
     db.create_all()
 
+conversation_history=[]
+def ask_question(question):
+    global conversation_history
+
+    # Append the user's new message to the conversation history
+    conversation_history.append({"role": "user", "content": question})
+
+    # Send the conversation history to the API
+    response = openai.ChatCompletion.create(
+        model="gpt-4",
+        messages=conversation_history
+    )
+
+    # Get the assistant's response
+    answer = response['choices'][0]['message']['content']
+
+    # Add the assistant's response to the conversation history
+    conversation_history.append({"role": "assistant", "content": answer})
+
+    return answer
 
 @app.route("/")
 def hello_world():
@@ -52,8 +74,8 @@ def hello_world():
 @app.route("/api/v1/recipes")
 def get_recipes():
     values = request.args.get("values")
-
-    return {"values": values}
+    response = ask_question(values)
+    return response
 
 
 @app.route("/api/v1/send-otp", methods=["POST"])
@@ -113,6 +135,7 @@ def verify_otp():
     except Exception as e:
         print(e)
         return jsonify({"error": "Internal Server Error"}), 500
+
 
 
 if __name__ == "__main__":
