@@ -170,16 +170,18 @@ const UserProfile = () => {
 
   return (
     <div className="p-5">
-      <div className="flex justify-between gap-2">
-        <div>
+      <div className="flex justify-between gap-2 bg-stone-100 p-2">
+        <div className="w-full flex justify-center">
           <Toaster />
-          <div className="text-xl font-bold">User Profile & Preferences</div>
+          <div>
+          <div className="text-xl font-bold mx-16">User Profile & Preferences</div>
           <div className="mb-4">
             Save your preferences for personalized recipe suggestions in future
           </div>
+          </div>
         </div>
         <button
-          className="btn btn-outline btn-success"
+          className="btn btn-outline bg-red-700 mt-2 m-2 text-white"
           onClick={savePreference}
         >
           Save
