@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 import os
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 import random
 from utils import sms_twilio
 from dotenv import load_dotenv
 from flask_cors import CORS
 import openai
+from sqlalchemy.dialects.postgresql import ARRAY
 
 load_dotenv()
 
@@ -19,6 +21,7 @@ app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DB_URI")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 openai.api_key = os.getenv('API_KEY')
 
@@ -38,6 +41,13 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     mobile = db.Column(db.String(15), unique=True, nullable=False)
     latest_otp = db.Column(db.String(4), nullable=False)
+
+    favorite_meats = db.Column(ARRAY(db.String(50)), default=[])
+    dietary_restrictions = db.Column(ARRAY(db.String(50)), default=[])
+    spice_tolerance = db.Column(db.String(20), nullable=True)
+    cooking_skill_level = db.Column(db.String(20), nullable=True)
+    cuisine_types = db.Column(ARRAY(db.String(50)), default=[])
+
     created_at = db.Column(db.DateTime, default=db.func.current_timestamp())
     updated_at = db.Column(
         db.DateTime,
@@ -49,6 +59,11 @@ class User(db.Model):
         return {
             "id": self.id,
             "mobile": self.mobile,
+            "favorite_meats": self.favorite_meats,
+            "dietary_restrictions": self.dietary_restrictions,
+            "spice_tolerance": self.spice_tolerance,
+            "cooking_skill_level": self.cooking_skill_level,
+            "cuisine_types": self.cuisine_types,
         }
 
 
@@ -160,6 +175,44 @@ def verify_otp():
         return jsonify({"error": "Internal Server Error"}), 500
 
 
+@app.route("/api/v1/user-preference", methods=["POST"])
+def save_user_preferences():
+    try:
+        userId = request.json.get("userId")
+
+        favorite_meats = request.json.get("favorite_meats")
+        dietary_restrictions = request.json.get("dietary_restrictions")
+        spice_tolerance = request.json.get("spice_tolerance")
+        cooking_skill_level = request.json.get("cooking_skill_level")
+        cuisine_types = request.json.get("cuisine_types")
+
+        user = User.query.filter_by(id=userId).first()
+
+        if not user:
+            return jsonify({"message": "user not found"}), 404
+
+        user.favorite_meats = favorite_meats
+        user.dietary_restrictions = dietary_restrictions
+        user.spice_tolerance = spice_tolerance
+        user.cooking_skill_level = cooking_skill_level
+        user.cuisine_types = cuisine_types
+
+        db.session.commit()
+
+        return (
+            jsonify(
+                {
+                    "message": "User preference saved successfully",
+                    "status": "success",
+                    "user": user.to_dict(),
+                }
+            ),
+            200,
+        )
+
+    except Exception as e:
+        print(e)
+        return jsonify({"error": "Internal Server Error"}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, port=8000)
