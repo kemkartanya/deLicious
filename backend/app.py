@@ -4,12 +4,14 @@ from flask_sqlalchemy import SQLAlchemy
 import random
 from utils import sms_twilio
 from dotenv import load_dotenv
+from flask_cors import CORS
 
 load_dotenv()
 
 db = SQLAlchemy()
 
 app = Flask(__name__)
+CORS(app)
 
 # Configure the PostgreSQL database with SQLAlchemy
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DB_URI")

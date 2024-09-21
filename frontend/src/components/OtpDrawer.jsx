@@ -1,8 +1,43 @@
-import React from "react";
+import React, { useState } from "react";
+import axios from "axios";
+import toast, { Toaster } from "react-hot-toast";
 
 const OtpDrawer = () => {
+  const [otp, setOtp] = useState("");
+
+  const verifyOtp = async () => {
+    try {
+      const mobile = localStorage.getItem("mobile");
+
+      if (mobile.length !== 10) {
+        toast.error("enter 10 digit phone number");
+      }
+
+      const { data } = await axios.post(
+        "http://localhost:8000/api/v1/verify-otp",
+        {
+          mobile: mobile,
+          otp: otp,
+        }
+      );
+
+      if (data.status == "success") {
+        localStorage.setItem("user", JSON.stringify(data.user));
+
+        toast.success(data.message);
+        document.getElementById("otp-drawer").checked = false;
+
+        window.location.reload();
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error("couldn't login");
+    }
+  };
+
   return (
     <div class="drawer-side">
+      <Toaster />
       <label
         for="otp-drawer"
         aria-label="close sidebar"
@@ -20,8 +55,12 @@ const OtpDrawer = () => {
                 type="text"
                 placeholder="Enter One Time Password"
                 className="input input-bordered w-full"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
               />
-              <button className="btn btn-wide w-full">Submit</button>
+              <button className="btn btn-wide w-full" onClick={verifyOtp}>
+                Submit
+              </button>
             </div>
           </div>
         </div>
