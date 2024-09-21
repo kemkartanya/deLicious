@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import UserProfile from "./pages/UserProfile";
 import Chatbot from "./pages/Chatbot";
 import Layout from "./layouts/Layout";
+// import OTP from "./pages/OTP";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/profile" element={<UserProfile />} />
         <Route path="/receipe-generator" element={<Chatbot />} />
         <Route path="*" element={<Navigate to="/" />} />
+        {/* <Route path="/otp" element={<OTP />} /> */}
       </Route>
     </Routes>
   );

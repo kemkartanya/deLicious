@@ -1,8 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { FiUser } from "react-icons/fi";
 import Login from "../pages/Login";
+import OTP from "../pages/OTP";
 
 const Navbar = () => {
+  const [showOTP, setShowOTP] = useState(false);
+
+  const handleProceed = () => {
+    setShowOTP(!showOTP);
+  };
   return (
     <div className="md:px-28 py-4 shadow navbar bg-base-100">
       <div className="flex-1">
@@ -57,7 +63,11 @@ const Navbar = () => {
               class="drawer-overlay"
             ></label>
             <ul class="menu bg-base-200 text-base-content min-h-full w-1/3 p-0">
-              <Login/>
+            {showOTP ? (
+                <OTP onProceed={handleProceed}/>
+              ) : (
+                <Login onProceed={handleProceed} />
+              )}
             </ul>
           </div>
         </div>

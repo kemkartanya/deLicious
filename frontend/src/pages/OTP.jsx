@@ -1,7 +1,6 @@
-import React from "react";
-// import { FiUser } from "react-icons/fi";
+import React from 'react'
 
-function Login({ onProceed }) {
+function OTP({ onProceed }) {
   return (
     <div
       className="bg-cover bg-center w-full h-screen content-end"
@@ -12,15 +11,15 @@ function Login({ onProceed }) {
           <h2 className="text-4xl">Sign In/Sign Up</h2>
           <input
             type="text"
-            placeholder="Mobile Number"
+            placeholder="Enter OTP"
             className="input input-bordered w-full"
           />
-          <button className="btn btn-wide w-full" onClick={onProceed}>Proceed Via OTP</button>
+          <button className="btn btn-wide w-full" onClick={onProceed}>Verify</button>
           <p className="text-lg">By signing in you agree to our <span className="text-red-600">terms and conditions</span></p>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
-export default Login;
+export default OTP
